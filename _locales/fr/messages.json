@@ -1,0 +1,102 @@
+{
+  "description": {
+    "message": "Envoyez les bugs aux auteurs des pages web.",
+    "description": ""
+  },
+  "summary_label": {
+    "message": "Intitulé du bug",
+    "description": ""
+  },
+  "summary_placeholder": {
+    "message": "Expliquer brièvement le problème",
+    "description": ""
+  },
+  "url_label": {
+    "message": "Url:",
+    "description": ""
+  },
+  "browser_label": {
+    "message": "Navigateur:",
+    "description": ""
+  },
+  "screen_label": {
+    "message": "Ecran:",
+    "description": ""
+  },
+  "whatdone_label": {
+    "message": "Qu'avez-vous fait ?",
+    "description": ""
+  },
+  "whatdone_placeholder": {
+    "message": "Essayez de donner toutes les étapes pour reproduire le bug",
+    "description": ""
+  },
+  "whathad_label": {
+    "message": "Que s'est-il passé ?",
+    "description": ""
+  },
+  "whathad_placeholder": {
+    "message": "Essayez de décrire le bug observé le plus précisément possible.",
+    "description": ""
+  },
+  "whatshould_label": {
+    "message": "Qu'aurait-il dû se passer ?",
+    "description": ""
+  },
+  "whatshould_placeholder": {
+    "message": "Décrivez le comportement auquel vous vous seriez attendu",
+    "description": ""
+  },
+  "console_label": {
+    "message": "Contenu de la console :",
+    "description": ""
+  },
+  "security_label": {
+    "message": "la sécurité de beaucoup d'utilisateurs pourrait être impactée.",
+    "description": ""
+  },
+  "screenshot_alt": {
+    "message": "Captude d'écran de la page.",
+    "description": ""
+  },
+  "mail_label": {
+    "message": "Mail:",
+    "description": ""
+  },
+  "mail_placeholder": {
+    "message": "Entrez l'email du webmaster",
+    "description": ""
+  },
+  "unsecure_label": {
+    "message": "Les informations du bug seront envoyées en clair. Vérifiez qu'il n'y a pas de donnée confidentielles dans ce dernier.",
+    "description": ""
+  },
+  "submit": {
+    "message": "Soumettre le bug",
+    "description": ""
+  },
+  "bugreport": {
+    "message": "Rapport de bug:",
+    "description": ""
+  },
+  "bugreport_help": {
+    "message": "Copiez/collez ce bug et envoyez le par mail au webmaster",
+    "description": ""
+  },
+  "sending": {
+    "message": "Envoi vers ",
+    "description": ""
+  },
+  "sent": {
+    "message": "C'est envoyé, merci !",
+    "description": ""
+  },
+  "error": {
+    "message": "Prévenez le webmaster qu'il y a une erreur dans son programme de traitement des bugs",
+    "description": ""
+  },
+  "restricted": {
+    "message": "Impoossible d'accèder au contenu de l'onglet.",
+    "description": ""
+  }
+}

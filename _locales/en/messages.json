@@ -1,0 +1,102 @@
+{
+  "description": {
+    "message": "Send bugs to the author of a web page.",
+    "description": ""
+  },
+  "summary_label": {
+    "message": "Summary:",
+    "description": ""
+  },
+  "summary_placeholder": {
+    "message": "Explain the bug briefly",
+    "description": ""
+  },
+  "url_label": {
+    "message": "Url:",
+    "description": ""
+  },
+  "browser_label": {
+    "message": "Browser:",
+    "description": ""
+  },
+  "screen_label": {
+    "message": "Screen:",
+    "description": ""
+  },
+  "whatdone_label": {
+    "message": "What did you do?",
+    "description": ""
+  },
+  "whatdone_placeholder": {
+    "message": "Try to give the steps to reproduce the observed behavior",
+    "description": ""
+  },
+  "whathad_label": {
+    "message": "What happened?",
+    "description": ""
+  },
+  "whathad_placeholder": {
+    "message": "Try to be the most descriptive you can",
+    "description": ""
+  },
+  "whatshould_label": {
+    "message": "What should have happened?",
+    "description": ""
+  },
+  "whatshould_placeholder": {
+    "message": "What did you expected to have",
+    "description": ""
+  },
+  "console_label": {
+    "message": "Console content:",
+    "description": ""
+  },
+  "security_label": {
+    "message": "many users could be harmed by this problem.",
+    "description": ""
+  },
+  "screenshot_alt": {
+    "message": "Screen capture of the bugged tab.",
+    "description": ""
+  },
+  "mail_label": {
+    "message": "Mail:",
+    "description": ""
+  },
+  "mail_placeholder": {
+    "message": "Please enter the webmaster e-mail",
+    "description": ""
+  },
+  "unsecure_label": {
+    "message": "Unsecure: Informations about this bug will be sent in an unsecure way. Check if it contains confidential informations.",
+    "description": ""
+  },
+  "submit": {
+    "message": "Report bug",
+    "description": ""
+  },
+  "bugreport": {
+    "message": "Bug report:",
+    "description": ""
+  },
+  "bugreport_help": {
+    "message": "Copy/paste and mail it to the webmaster",
+    "description": ""
+  },
+  "sending": {
+    "message": "Sending to",
+    "description": ""
+  },
+  "sent": {
+    "message": "Sent ! Thank you !",
+    "description": ""
+  },
+  "error": {
+    "message": "Please, tells the webmaster something wrong with his bug report program",
+    "description": ""
+  },
+  "restricted": {
+    "message": "Cannot access the tab content.",
+    "description": ""
+  }
+}
