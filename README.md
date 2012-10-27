@@ -8,7 +8,7 @@ BugMeBack is a free GNU/GPL Google Chrome extension that allows your users to re
 
 Finally, the user can send the bug :
 * by copy/pasting the bug report in a mail
-* with a POST request when the page contains this king of meta tag : <meta name="bugreport" content="https://app.ecogom.fr.ewk/bug.dat" />
+* with a POST request when the page contains this king of meta tag : `<meta name="bugreport" content="https://app.ecogom.fr.ewk/bug.dat" />`
 
 Hope you'll fnd it usefull, feel free to commit (especially if you want to translate it in your language), suggest improvement or claim issues.
 
