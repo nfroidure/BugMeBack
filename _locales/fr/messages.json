@@ -67,6 +67,14 @@
     "message": "Entrez l'email du webmaster",
     "description": ""
   },
+  "usermail_label": {
+    "message": "Votre email:",
+    "description": ""
+  },
+  "usermail_placeholder": {
+    "message": "Entrez votre adresse si vous souhaitez être prévenu en cas de résolution",
+    "description": ""
+  },
   "unsecure_label": {
     "message": "Les informations du bug seront envoyées en clair. Vérifiez qu'il n'y a pas de donnée confidentielles dans ce dernier.",
     "description": ""

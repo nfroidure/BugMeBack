@@ -67,6 +67,14 @@
     "message": "Please enter the webmaster e-mail",
     "description": ""
   },
+  "usermail_label": {
+    "message": "My mail:",
+    "description": ""
+  },
+  "usermail_placeholder": {
+    "message": "Please enter your e-mail if you want to be warned when resolved",
+    "description": ""
+  },
   "unsecure_label": {
     "message": "Unsecure: Informations about this bug will be sent in an unsecure way. Check if it contains confidential informations.",
     "description": ""

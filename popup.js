@@ -4,7 +4,7 @@ chrome.extension.onRequest.addListener(function(info) {
 	bugInfo=info.report;
 	var form=document.createElement('form');
 	form.innerHTML='<form action="#">'
-		+'	<p><label>'+chrome.i18n.getMessage("summary_label")+'<br />'
+		+'	<p><label>'+chrome.i18n.getMessage("summary_label")+'*<br />'
 		+'<input type="text" id="summary" placeholder="'+chrome.i18n.getMessage("summary_placeholder")+'" required="required" /></p>'
 		+'	<p><label>'+chrome.i18n.getMessage("url_label")+'<br />'
 		+'<input type="text" id="url"'+(bugUrl?' value="'+bugUrl+'" disabled="disabled"':' required="required"')+' /></p>'
@@ -12,35 +12,39 @@ chrome.extension.onRequest.addListener(function(info) {
 		+'<input type="text" id="browser" value="'+window.navigator.userAgent+'" disabled="disabled" /></p>'
 		+'	<p><label>'+chrome.i18n.getMessage("screen_label")+'<br />'
 		+'<input type="text" id="screen" value="'+info.screen+'" disabled="disabled" /></p>'
-		+'	<p><label>'+chrome.i18n.getMessage("whatdone_label")+'<br />'
+		+'	<p><label>'+chrome.i18n.getMessage("whatdone_label")+'*<br />'
 		+'<textarea id="whatdone" placeholder="'+chrome.i18n.getMessage("whatdone_placeholder")+'" required="required"></textarea></p>'
-		+'	<p><label>'+chrome.i18n.getMessage("whathad_label")+'<br />'
+		+'	<p><label>'+chrome.i18n.getMessage("whathad_label")+'*<br />'
 		+'<textarea id="whathad" placeholder="'+chrome.i18n.getMessage("whathad_placeholder")+'" required="required"></textarea></p>'
-		+'	<p><label>'+chrome.i18n.getMessage("whatshould_label")+'<br />'
+		+'	<p><label>'+chrome.i18n.getMessage("whatshould_label")+'*<br />'
 		+'<textarea id="whatshould" placeholder="'+chrome.i18n.getMessage("whatshould_placeholder")+'" required="required"></textarea></p>'
 		//+'	<p><label>'+chrome.i18n.getMessage("console_label")+'Console content:<br />'
-		//+'<textarea id="console">'+info.messages+'</textarea></p>'
+		//+'<textarea id="console" disabled="disabled">'+info.messages+'</textarea></p>'
 		+'	<p><label><input type="checkbox" id="security" /> '+chrome.i18n.getMessage("security_label")+'</label></p>'
 		+(bugScreenshot?'	<p><img src="'+bugScreenshot+'" alt="'+chrome.i18n.getMessage("screenshot_alt")+'" /></p>':'')
-		//+(.indexOf('mailto:')===0?'	<p><label>'+chrome.i18n.getMessage("mail_label")+'<br />'
+		//+(bugInfo.indexOf('mailto:')===0?'	<p><label>'+chrome.i18n.getMessage("mail_label")+'<br />'
 		//+'<input type="email" id="mail" placeholder="'+chrome.i18n.getMessage("mail_placeholder")+'" required="required" /></p>':'')
+		+'	<p><label>'+chrome.i18n.getMessage("usermail_label")+'<br />'
+		+'<input type="email" id="usermail" placeholder="'+chrome.i18n.getMessage("usermail_placeholder")+'" /></p>'
 		+(bugInfo.indexOf('http:')===0?'	<p>'+chrome.i18n.getMessage("unsecure_label")+'</p>':'')
 		+'	<p><input type="submit" value="'+chrome.i18n.getMessage("submit")+'" /></p>'
 		+'</form>';
 		form.addEventListener('submit', function(event) {
 			event.stopPropagation();
 			event.preventDefault();
-			var content='Summary:'+document.getElementById('summary').value+'\n'
-				+'Url:'+document.getElementById('url').value+'\n'
-				+'Browser:'+document.getElementById('browser').value+'\n'
-				+'What did you do:'+document.getElementById('whatdone').value+'\n'
-				+'What happened:'+document.getElementById('whathad').value+'\n'
-				+'What should have happened:'+document.getElementById('whatshould').value+'\n'
-				//+'Console content:'+document.getElementById('summary').value+'\n'
-				+'Security issue:'+(document.getElementById('security').checked?'yes':'no')+'\n'
-				+'Screenshot (dataUri):'+bugScreenshot;
 			if(!bugInfo)
 				{
+				var content='Summary:'+document.getElementById('summary').value+'\n'
+					+'Url:'+document.getElementById('url').value+'\n'
+					+'Browser:'+document.getElementById('browser').value+'\n'
+					+'Screen:'+document.getElementById('screen').value+'\n'
+					+'What did you do:'+document.getElementById('whatdone').value+'\n'
+					+'What happened:'+document.getElementById('whathad').value+'\n'
+					+'What should have happened:'+document.getElementById('whatshould').value+'\n'
+					//+'Console content:'+document.getElementById('console').value+'\n'
+					+'User mail:'+document.getElementById('usermail').value+'\n'
+					+'Security issue:'+(document.getElementById('security').checked?'yes':'no')+'\n'
+					+'Screenshot (dataUri):'+bugScreenshot;
 				while(document.body.firstChild)
 					document.body.removeChild(document.body.firstChild);
 				var p=document.createElement('p');
@@ -61,6 +65,17 @@ chrome.extension.onRequest.addListener(function(info) {
 				}*/
 			else if(bugInfo.indexOf('http:')===0||bugInfo.indexOf('https:')===0)
 				{
+				var content={'entry':{'label':document.getElementById('summary').value,
+					'url':document.getElementById('url').value,
+					'browser':document.getElementById('browser').value,
+					'screen':document.getElementById('screen').value,
+					'whatdone':document.getElementById('whatdone').value,
+					'whathad':document.getElementById('whathad').value,
+					'whatshould':document.getElementById('whatshould').value,
+					//'console:':document.getElementById('console').value,
+					'usermail':document.getElementById('usermail').value,
+					'security':(document.getElementById('security').checked?1:0),
+					'screenshot':bugScreenshot}};
 				while(document.body.firstChild)
 					document.body.removeChild(document.body.firstChild);
 				var p=document.createElement('p');
@@ -82,7 +97,7 @@ chrome.extension.onRequest.addListener(function(info) {
 						p.innerHTML=chrome.i18n.getMessage("error")+' (code:'+req.status+', response:'+req.responseText+').';
 					document.body.appendChild(p);
 					};
-				req.send(null);
+				req.send(JSON.stringify(content));
 				}
 			});
 	document.body.appendChild(form);
@@ -106,7 +121,7 @@ window.addEventListener('load',function(){
 			});
 		});
 	});
-chrome.experimental.devtools.console.getMessages(function (messages)
+/*chrome.experimental.devtools.console.getMessages(function (messages)
 	{
 	console.log(messages);
-	});
+	});*/
