@@ -3,6 +3,10 @@
     "message": "Send bugs to the author of a web page.",
     "description": ""
   },
+  "tooltip": {
+    "message": "Report a bug",
+    "description": ""
+  },
   "summary_label": {
     "message": "Summary:",
     "description": ""

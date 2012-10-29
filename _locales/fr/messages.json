@@ -3,6 +3,10 @@
     "message": "Envoyez les bugs aux auteurs des pages web.",
     "description": ""
   },
+  "tooltip": {
+    "message": "Soumettre un bug",
+    "description": ""
+  },
   "summary_label": {
     "message": "Intitulé du bug",
     "description": ""
