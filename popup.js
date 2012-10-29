@@ -123,7 +123,3 @@ window.addEventListener('load',function(){
 			});
 		});
 	});
-/*chrome.experimental.devtools.console.getMessages(function (messages)
-	{
-	console.log(messages);
-	});*/
