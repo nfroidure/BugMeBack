@@ -4,6 +4,7 @@ BugMeBack
 BugMeBack is a free GNU/GPL Google Chrome extension that allows your users to report bugs with a form that :
 * ask all the elements to reproduce and understand the bug
 * give the user agent, screen size and url of the bug
+* give the console contents (console.log calls and javascript errors)
 * takes a screenshot of the page
 
 Finally, the user can send the bug :

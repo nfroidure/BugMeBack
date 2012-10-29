@@ -32,7 +32,7 @@ chrome.extension.onRequest.addListener(function(info) {
 		+'<textarea id="whathad" placeholder="'+chrome.i18n.getMessage("whathad_placeholder")+'" required="required"></textarea></p>'
 		+'	<p><label>'+chrome.i18n.getMessage("whatshould_label")+'*<br />'
 		+'<textarea id="whatshould" placeholder="'+chrome.i18n.getMessage("whatshould_placeholder")+'" required="required"></textarea></p>'
-		+'	<p><label>'+chrome.i18n.getMessage("console_label")+'Console content:<br />'
+		+'	<p><label>'+chrome.i18n.getMessage("console_label")+'<br />'
 		+'<textarea id="console" disabled="disabled">'+consoleLogs+'</textarea></p>'
 		+'	<p><label><input type="checkbox" id="security" /> '+chrome.i18n.getMessage("security_label")+'</label></p>'
 		+(bugScreenshot?'	<p><img src="'+bugScreenshot+'" alt="'+chrome.i18n.getMessage("screenshot_alt")+'" /></p>':'')
