@@ -34,7 +34,8 @@ chrome.extension.onRequest.addListener(function(info) {
 			event.preventDefault();
 			if(!bugInfo)
 				{
-				var content='Summary:'+document.getElementById('summary').value+'\n'
+				var content='## BugMeBack manual bug report ##\n'
+					+'Summary:'+document.getElementById('summary').value+'\n'
 					+'Url:'+document.getElementById('url').value+'\n'
 					+'Browser:'+document.getElementById('browser').value+'\n'
 					+'Screen:'+document.getElementById('screen').value+'\n'
@@ -50,6 +51,7 @@ chrome.extension.onRequest.addListener(function(info) {
 				var p=document.createElement('p');
 				p.innerHTML='<label>'+chrome.i18n.getMessage("bugreport")+'<br /><textarea>'+content+'</textarea><br />'+chrome.i18n.getMessage("bugreport_help")+'</label>';
 				document.body.appendChild(p);
+				p.getElementsByTagName('textarea')[0].select();
 				}
 			/* Can't use mailto because of the 2048 chars limit
 			else if(bugInfo.indexOf('mailto:')===0)
