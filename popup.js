@@ -2,6 +2,20 @@ var bugInfo='', bugUrl='', bugScreenshot='';
 
 chrome.extension.onRequest.addListener(function(info) {
 	bugInfo=info.report;
+	var consoleLogs='';
+	if(info.messages)
+		{
+		for(var i=0, j=info.messages.length; i<j; i++)
+			{
+			var k=0;
+			while(info.messages[i][k])
+				{
+				consoleLogs+=(k>0?' ':'')+info.messages[i][k];
+				k++;
+				}
+			consoleLogs+='\n';
+			}
+		}
 	var form=document.createElement('form');
 	form.innerHTML='<form action="#">'
 		+'	<p><label>'+chrome.i18n.getMessage("summary_label")+'*<br />'
@@ -18,8 +32,8 @@ chrome.extension.onRequest.addListener(function(info) {
 		+'<textarea id="whathad" placeholder="'+chrome.i18n.getMessage("whathad_placeholder")+'" required="required"></textarea></p>'
 		+'	<p><label>'+chrome.i18n.getMessage("whatshould_label")+'*<br />'
 		+'<textarea id="whatshould" placeholder="'+chrome.i18n.getMessage("whatshould_placeholder")+'" required="required"></textarea></p>'
-		//+'	<p><label>'+chrome.i18n.getMessage("console_label")+'Console content:<br />'
-		//+'<textarea id="console" disabled="disabled">'+info.messages+'</textarea></p>'
+		+'	<p><label>'+chrome.i18n.getMessage("console_label")+'Console content:<br />'
+		+'<textarea id="console" disabled="disabled">'+consoleLogs+'</textarea></p>'
 		+'	<p><label><input type="checkbox" id="security" /> '+chrome.i18n.getMessage("security_label")+'</label></p>'
 		+(bugScreenshot?'	<p><img src="'+bugScreenshot+'" alt="'+chrome.i18n.getMessage("screenshot_alt")+'" /></p>':'')
 		//+(bugInfo.indexOf('mailto:')===0?'	<p><label>'+chrome.i18n.getMessage("mail_label")+'<br />'
@@ -42,7 +56,7 @@ chrome.extension.onRequest.addListener(function(info) {
 					+'What did you do:'+document.getElementById('whatdone').value+'\n'
 					+'What happened:'+document.getElementById('whathad').value+'\n'
 					+'What should have happened:'+document.getElementById('whatshould').value+'\n'
-					//+'Console content:'+document.getElementById('console').value+'\n'
+					+'Console content:'+document.getElementById('console').value+'\n'
 					+'User mail:'+document.getElementById('usermail').value+'\n'
 					+'Security issue:'+(document.getElementById('security').checked?'yes':'no')+'\n'
 					+'Screenshot (dataUri):'+bugScreenshot;
@@ -74,7 +88,7 @@ chrome.extension.onRequest.addListener(function(info) {
 					'whatdone':document.getElementById('whatdone').value,
 					'whathad':document.getElementById('whathad').value,
 					'whatshould':document.getElementById('whatshould').value,
-					//'console:':document.getElementById('console').value,
+					'console:':document.getElementById('console').value,
 					'usermail':document.getElementById('usermail').value,
 					'security':(document.getElementById('security').checked?1:0),
 					'screenshot':bugScreenshot}};

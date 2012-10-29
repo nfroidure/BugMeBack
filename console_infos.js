@@ -1,10 +1,15 @@
+// Wrapping console logs
 window.console={
 	'nativeConsole':window.console,
 	'history':[],
-	'log':function(message)
+	'log':function()
 		{
 		this.history.push(arguments);
-		this.nativeConsole.log('w:'+message);
+		this.nativeConsole.log(arguments);
 		}
 	}
-console.log('console wrapped');
+// Catching error raising
+window.onerror = function myErrorHandler() {
+	console.history.push(arguments);
+	return false;
+	}
