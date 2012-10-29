@@ -13,6 +13,11 @@
 		"default_title": "__MSG_tooltip__",
 		"default_popup": "popup.html"
 	},
+	"content_scripts": [{
+		"matches": ["http://*/*", "https://*/*"],
+		"js": ["console_infos.js"],
+		"run_at": "document_start"
+	}],
 	"default_locale":"en",
 	"manifest_version": 2
 }
