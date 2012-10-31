@@ -1,8 +1,12 @@
-var bugInfo='', bugUrl='', bugScreenshot='';
+var bugInfo='', bugFormat='', bugUrl='', bugScreenshot='';
 
 chrome.extension.onRequest.addListener(function(info) {
 	bugInfo=info.report;
 	var consoleLogs='';
+	if(['text/plain','application/json'/* Todo : ,'application/x-www-form-urlencoded','multipart/form-data'*/].indexOf(info.reportType)>=0)
+		{
+		bugFormat=info.reportType;
+		}
 	if(info.messages)
 		{
 		for(var i=0, j=info.messages.length; i<j; i++)
@@ -46,9 +50,25 @@ chrome.extension.onRequest.addListener(function(info) {
 		form.addEventListener('submit', function(event) {
 			event.stopPropagation();
 			event.preventDefault();
-			if(!bugInfo)
+			var content='';
+			switch(bugFormat)
 				{
-				var content='## BugMeBack manual bug report ##\n'
+				case 'application/json':
+				content=JSON.stringify({'entry':{'label':document.getElementById('summary').value,
+					'url':document.getElementById('url').value,
+					'browser':document.getElementById('browser').value,
+					'screen':document.getElementById('screen').value,
+					'whatdone':document.getElementById('whatdone').value,
+					'whathad':document.getElementById('whathad').value,
+					'whatshould':document.getElementById('whatshould').value,
+					'console':document.getElementById('console').value,
+					'usermail':document.getElementById('usermail').value,
+					'security':(document.getElementById('security').checked?1:0),
+					'screenshot':bugScreenshot}});
+					break;
+				case 'text/plain':
+				default:
+				content='## BugMeBack manual bug report ##\n'
 					+'Summary:'+document.getElementById('summary').value+'\n'
 					+'Url:'+document.getElementById('url').value+'\n'
 					+'Browser:'+document.getElementById('browser').value+'\n'
@@ -59,7 +79,11 @@ chrome.extension.onRequest.addListener(function(info) {
 					+'Console content:'+document.getElementById('console').value+'\n'
 					+'User mail:'+document.getElementById('usermail').value+'\n'
 					+'Security issue:'+(document.getElementById('security').checked?'yes':'no')+'\n'
-					+'Screenshot (dataUri):'+bugScreenshot;
+					+'Screenshot (dataUri):'+bugScreenshot+'\n'
+					+'See http://github.com/nfroidure/BugMeBack to know how to automate bug reporting.';
+				}
+			if(!bugInfo)
+				{
 				while(document.body.firstChild)
 					document.body.removeChild(document.body.firstChild);
 				var p=document.createElement('p');
@@ -81,17 +105,6 @@ chrome.extension.onRequest.addListener(function(info) {
 				}*/
 			else if(bugInfo.indexOf('http:')===0||bugInfo.indexOf('https:')===0)
 				{
-				var content={'entry':{'label':document.getElementById('summary').value,
-					'url':document.getElementById('url').value,
-					'browser':document.getElementById('browser').value,
-					'screen':document.getElementById('screen').value,
-					'whatdone':document.getElementById('whatdone').value,
-					'whathad':document.getElementById('whathad').value,
-					'whatshould':document.getElementById('whatshould').value,
-					'console:':document.getElementById('console').value,
-					'usermail':document.getElementById('usermail').value,
-					'security':(document.getElementById('security').checked?1:0),
-					'screenshot':bugScreenshot}};
 				while(document.body.firstChild)
 					document.body.removeChild(document.body.firstChild);
 				var p=document.createElement('p');
@@ -113,7 +126,7 @@ chrome.extension.onRequest.addListener(function(info) {
 						p.innerHTML=chrome.i18n.getMessage("error")+' (code:'+req.status+', response:'+req.responseText+').';
 					document.body.appendChild(p);
 					};
-				req.send(JSON.stringify(content));
+				req.send(content);
 				}
 			});
 	document.body.appendChild(form);

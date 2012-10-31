@@ -108,7 +108,7 @@
     "description": ""
   },
   "restricted": {
-    "message": "Impoossible d'accèder au contenu de l'onglet.",
+    "message": "Impossible d'accèder au contenu de l'onglet.",
     "description": ""
   }
 }
