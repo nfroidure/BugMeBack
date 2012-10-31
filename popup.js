@@ -3,10 +3,12 @@ var bugInfo='', bugFormat='', bugUrl='', bugScreenshot='';
 chrome.extension.onRequest.addListener(function(info) {
 	bugInfo=info.report;
 	var consoleLogs='';
-	if(['text/plain','application/json'/* Todo : ,'application/x-www-form-urlencoded','multipart/form-data'*/].indexOf(info.reportType)>=0)
+	if(['text/plain','application/json','application/x-www-form-urlencoded','multipart/form-data'].indexOf(info.reportType)>=0)
 		{
 		bugFormat=info.reportType;
 		}
+	if(!bugInfo)
+		bugFormat='text/plain';
 	if(info.messages)
 		{
 		for(var i=0, j=info.messages.length; i<j; i++)
@@ -65,6 +67,30 @@ chrome.extension.onRequest.addListener(function(info) {
 					'usermail':document.getElementById('usermail').value,
 					'security':(document.getElementById('security').checked?1:0),
 					'screenshot':bugScreenshot}});
+					break;
+				case 'multipart/form-data':
+				case 'application/x-www-form-urlencoded':
+				content=new FormData();
+					content.append('label',document.getElementById('summary').value);
+					content.append('url',document.getElementById('url').value);
+					content.append('browser',document.getElementById('browser').value);
+					content.append('screen',document.getElementById('screen').value);
+					content.append('whatdone',document.getElementById('whatdone').value);
+					content.append('whathad',document.getElementById('whathad').value);
+					content.append('whatshould',document.getElementById('whatshould').value);
+					content.append('console',document.getElementById('console').value);
+					content.append('usermail',document.getElementById('usermail').value);
+					content.append('security',(document.getElementById('security').checked?1:0));
+					if(bugFormat=='multipart/form-data')
+						{
+						var binary = atob(bugScreenshot.split(',')[1]);
+						var array = [];
+						for(var i = 0; i < binary.length; i++)
+							array.push(binary.charCodeAt(i));
+						content.append('screenshot',new Blob([new Uint8Array(array)], {type: bugScreenshot.split(';')[0].split(':')[1]}));
+						}
+					else
+						content.append('screenshot',bugScreenshot);
 					break;
 				case 'text/plain':
 				default:
