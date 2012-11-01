@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+       window.addEventListener("load", function(){
+        var theButton;
+        var ToolbarUIItemProperties = {
+          title: "BugMeBack",
+          icon: "icons/icon-18.png",
+          popup: {
+            href: "popup.html",
+            width: 357,
+            height: 400
+          }
+        }
+        theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
+        opera.contexts.toolbar.addItem(theButton);
+		
+		opera.extension.onmessage = function(event) {
+			if(event.data.target=='extension')
+				{
+				switch(event.data.source)
+					{
+					case 'popup':
+						var tab=opera.extension.tabs.getSelected();
+						if(!!tab.port)
+							tab.postMessage({'target':'page','message':'retrieve'});
+						//opera.extension.broadcastMessage({'target':'page','message':'retrieve'});
+						break;
+					case 'page':
+						var infos=event.data.infos;
+						var tab=opera.extension.tabs.getSelected();
+						if(tab.getScreenshot)
+							{
+							tab.getScreenshot(function(imageData) {
+								var canvas = document.createElement('canvas');
+								canvas.width = imageData.width;
+								canvas.height = imageData.height;
+								var ctx = canvas.getContext('2d');
+								ctx.putImageData(imageData, 0, 0);
+								infos.screenshot = canvas.toDataURL('image/png');
+								opera.extension.broadcastMessage({'target':'popup','infos':infos});
+								});
+							}
+						else
+							opera.extension.broadcastMessage({'target':'popup','infos':infos});
+						break;
+					}
+				}
+		};
+      }, false);
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

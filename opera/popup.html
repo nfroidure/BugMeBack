@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  	<title>BugMeBack</title>
+  	<style>
+			textarea { width:100%; height:90px; }
+			input[type=text], input[type=email], img { width:100%; }
+  	</style>
+    <script>
+		window.addEventListener("load", function(){
+			opera.extension.postMessage({'target':'extension','source':'popup','message':'loaded'});
+			}, false);
+		opera.extension.onmessage = function(event) {
+			if(event.data.target=='popup')
+				{
+				while(document.body.firstChild)
+					document.body.removeChild(document.body.firstChild);
+					var form=document.createElement('form');
+				if(event.data.infos)
+					{
+					var infos=event.data.infos;
+					form.innerHTML='<form action="#">'
+						+'	<p><label>Summary:*<br />'
+						+'<input type="text" id="summary" placeholder="Explain the bug briefly" required="required" /></p>'
+						+'	<p><label>Url:<br />'
+						+'<input type="text" id="url" value="'+infos.url+'" disabled="disabled" required="required" /></p>'
+						+'	<p><label>Browser:<br />'
+						+'<input type="text" id="browser" value="'+window.navigator.userAgent+'" disabled="disabled" /></p>'
+						+'	<p><label>Screen:<br />'
+						+'<input type="text" id="screen" value="'
+						+'width: '+infos.screen.width+', height: '+infos.screen.height+', scrollX: '+infos.screen.scrollX+', scrollY: '+infos.screen.scrollY
+						+'" disabled="disabled" /></p>'
+						+'	<p><label>What did you do ?*<br />'
+						+'<textarea id="whatdone" placeholder="Give the steps to reproduce the bug" required="required"></textarea></p>'
+						+'	<p><label>What happenned ?*<br />'
+						+'<textarea id="whathad" placeholder="Explain the bug you encountered" required="required"></textarea></p>'
+						+'	<p><label>What should have happened?*<br />'
+						+'<textarea id="whatshould" placeholder="What you expected to have" required="required"></textarea></p>'
+						+'	<p><label>Console:<br />'
+						+'<textarea id="console" disabled="disabled">'+infos.console+'</textarea></p>'
+						+'	<p><label><input type="checkbox" id="security" /> many users could be harmed by this problem.</label></p>'
+						+(infos.screenshot?
+							'	<p><img src="'+infos.screenshot+'" id="screenshot" alt="A capture of the tab content" /><br />'
+							+'	<label><input type="checkbox" id="capture" /> attach this screenshot to the bug report.</label></p>'
+							:'')
+						+'	<p><label>Your e-mail:<br />'
+						+'<input type="email" id="usermail" placeholder="Fill to we warned" /></p>'
+						+(infos.reportUrl&&infos.reportUrl.indexOf('http:')===0?'	<p>This bug will be send throught the Internet with an unsecure protocol.</p>':'')
+						+'	<p>'
+						+'	<input type="hidden" id="reportType" value="'+infos.reportType+'" />'
+						+'	<input type="hidden" id="reportUrl" value="'+infos.reportUrl+'" />'
+						+'	<input type="submit" value="Report the bug" />'
+						+'</p>'
+						+'</form>';
+					form.addEventListener('submit', function(event) {
+						event.stopPropagation();
+						event.preventDefault();
+						var content='';
+						var screenshot=(document.getElementById('capture')&&document.getElementById('capture').checked?document.getElementById('screenshot').getAttribute('src'):'');
+						switch(document.getElementById('reportType').value)
+							{
+							case 'application/json':
+							content=JSON.stringify({'entry':{'label':document.getElementById('summary').value,
+								'url':document.getElementById('url').value,
+								'browser':document.getElementById('browser').value,
+								'screen':document.getElementById('screen').value,
+								'whatdone':document.getElementById('whatdone').value,
+								'whathad':document.getElementById('whathad').value,
+								'whatshould':document.getElementById('whatshould').value,
+								'console':document.getElementById('console').value,
+								'usermail':document.getElementById('usermail').value,
+								'security':(document.getElementById('security').checked?1:0),
+								'screenshot':screenshot}});
+								break;
+							case 'multipart/form-data':
+							case 'application/x-www-form-urlencoded':
+							content=new FormData();
+								content.append('label',document.getElementById('summary').value);
+								content.append('url',document.getElementById('url').value);
+								content.append('browser',document.getElementById('browser').value);
+								content.append('screen',document.getElementById('screen').value);
+								content.append('whatdone',document.getElementById('whatdone').value);
+								content.append('whathad',document.getElementById('whathad').value);
+								content.append('whatshould',document.getElementById('whatshould').value);
+								content.append('console',document.getElementById('console').value);
+								content.append('usermail',document.getElementById('usermail').value);
+								content.append('security',(document.getElementById('security').checked?1:0));
+								if(screenshot)
+									{
+									if(bugFormat=='multipart/form-data')
+										{
+										var binary = atob(screenshot.split(',')[1]);
+										var array = [];
+										for(var i = 0; i < binary.length; i++)
+											array.push(binary.charCodeAt(i));
+										content.append('screenshot',new Blob([new Uint8Array(array)], {type: screenshot.split(';')[0].split(':')[1]}));
+										}
+									else
+										content.append('screenshot',screenshot);
+									}
+								break;
+							case 'text/plain':
+							default:
+							content='## BugMeBack manual bug report ##\n'
+								+'Summary:'+document.getElementById('summary').value+'\n'
+								+'Url:'+document.getElementById('url').value+'\n'
+								+'Browser:'+document.getElementById('browser').value+'\n'
+								+'Screen:'+document.getElementById('screen').value+'\n'
+								+'What did you do:'+document.getElementById('whatdone').value+'\n'
+								+'What happened:'+document.getElementById('whathad').value+'\n'
+								+'What should have happened:'+document.getElementById('whatshould').value+'\n'
+								+'Console content:'+document.getElementById('console').value+'\n'
+								+'User mail:'+document.getElementById('usermail').value+'\n'
+								+'Security issue:'+(document.getElementById('security').checked?'yes':'no')+'\n'
+								+(screenshot?'Screenshot (dataUri):'+screenshot+'\n':'')
+								+'See http://github.com/nfroidure/BugMeBack to know how to automate bug reporting.';
+							}
+						if(infos.reportUrl&&infos.reportUrl.indexOf('http:')===0||infos.reportUrl.indexOf('https:')===0)
+							{
+							while(document.body.firstChild)
+								document.body.removeChild(document.body.firstChild);
+							var p=document.createElement('p');
+							p.innerHTML='Sending to '+infos.reportUrl+'.';
+							document.body.appendChild(p);
+							var req = new XMLHttpRequest();
+							req.open(
+								"POST",
+								infos.reportUrl,
+								true);
+							req.onload = function()
+								{
+								while(document.body.firstChild)
+									document.body.removeChild(document.body.firstChild);
+								var p=document.createElement('p');
+								if(req.status==200||req.status==201)
+									p.innerHTML='Sent ! Thank you for improving the web !';
+								else
+									p.innerHTML='Error while sending, please report the webmaster that his bug report management is broken (code:'+req.status+', response:'+req.responseText+').';
+								document.body.appendChild(p);
+								};
+							req.send(content);
+							}
+						/* Can't use mailto because of the 2048 chars limit
+						else if(infos.reportUrl.indexOf('mailto:')===0)
+							{
+							while(document.body.firstChild)
+								document.body.removeChild(document.body.firstChild);
+							var p=document.createElement('p');
+							p.innerHTML='<a href="mailto:'+infos.reportUrl.substring(7)+'?subject=Bug+report&content='+encodeURIComponent(content)+'">Clic to send</a>';
+							document.body.appendChild(p);
+							}*/
+						else
+							{
+							while(document.body.firstChild)
+								document.body.removeChild(document.body.firstChild);
+							var p=document.createElement('p');
+							p.innerHTML='<label>Bug report:<br /><textarea>'+content+'</textarea></label><br />Please copy this bug report and send it to the webmaster.<br />Thank you for helping webmaster to make the web better.';
+							document.body.appendChild(p);
+							p.getElementsByTagName('textarea')[0].select();
+							}
+						});
+					document.body.appendChild(form);
+					}
+				else
+					{
+					var p=document.createElement('p');
+					p.innerHTML='Cannot access tab content...';
+					document.body.appendChild(p);
+					}
+				}
+			};
+    </script>
+  </head>
+  <body>
+  	<p>Loading...</p>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://www.example.org/helloworld">
+	<name>BugMeBack</name>
+	<description xml:lang="en">Send bugs to webmasters.</description>
+	<description xml:lang="fr">Envoyez vos bugs aux webmestres.</description>
+  	<author href="https://github.com/nfroidure/BugMeBack" email="nfroidure@elitwork.com">Nicolas Froidure</author>
+  	<icon src="icons/icon-64.png"/>
+	<feature name="opera:screenshot" required="false"/>
+	<access origin="*" subdomains="true" />
+</widget>

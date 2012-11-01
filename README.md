@@ -1,7 +1,7 @@
 BugMeBack
 ============
 
-BugMeBack is a free GNU/GPL Google Chrome extension that allows your users to report bugs with a form that :
+BugMeBack is a free GNU/GPL extension for both Google Chrome and Opera that allows your users to report bugs with a form that :
 * ask all the elements to reproduce and understand the bug
 * give the user agent, screen size and url of the bug
 * give the console contents (console.log calls and javascript errors)
@@ -17,6 +17,13 @@ Hope you'll find it usefull, feel free to commit (especially if you want to tran
 The extension in the Google Chrome Store : https://chrome.google.com/webstore/detail/bugmeback/hgmagcomobmjhaomdoihiggpdekaehmg
 
 A blog post in french about BugMeBack : http://www.insertafter.com/articles-bugmeback.html
+
+A thread about this proposal on the WhatWG list : http://lists.whatwg.org/htdig.cgi/whatwg-whatwg.org/2012-October/037745.html
+
+Testing
+-------------
+* opera : drag the config.xml file on the opera window
+* chrome : tools>extensions check the developper mode and choose load unpacked add-on.
 
 Contributors
 -------------
