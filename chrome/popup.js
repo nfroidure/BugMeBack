@@ -1,27 +1,6 @@
-var bugInfo='', bugFormat='', bugUrl='', bugScreenshot='';
+var screenshot='';
 
-chrome.extension.onRequest.addListener(function(info) {
-	bugInfo=info.report;
-	var consoleLogs='';
-	if(['text/plain','application/json','application/x-www-form-urlencoded','multipart/form-data'].indexOf(info.reportType)>=0)
-		{
-		bugFormat=info.reportType;
-		}
-	if(!bugInfo)
-		bugFormat='text/plain';
-	if(info.messages)
-		{
-		for(var i=0, j=info.messages.length; i<j; i++)
-			{
-			var k=0;
-			while(info.messages[i][k])
-				{
-				consoleLogs+=(k>0?' ':'')+info.messages[i][k];
-				k++;
-				}
-			consoleLogs+='\n';
-			}
-		}
+chrome.extension.onRequest.addListener(function(data) {
 	var form=document.createElement('form');
 	form.innerHTML='<form action="#">'
 		+'	<p><label>'+chrome.i18n.getMessage("summary_label")+'*<br />'
@@ -31,7 +10,9 @@ chrome.extension.onRequest.addListener(function(info) {
 		+'	<p><label>'+chrome.i18n.getMessage("browser_label")+'<br />'
 		+'<input type="text" id="browser" value="'+window.navigator.userAgent+'" disabled="disabled" /></p>'
 		+'	<p><label>'+chrome.i18n.getMessage("screen_label")+'<br />'
-		+'<input type="text" id="screen" value="'+info.screen+'" disabled="disabled" /></p>'
+		+'<input type="text" id="screen" value="'
+		+'width: '+data.infos.screen.width+', height: '+data.infos.screen.height+', scrollX: '+data.infos.screen.scrollX+', scrollY: '+data.infos.screen.scrollY
+		+'" disabled="disabled" /></p>'
 		+'	<p><label>'+chrome.i18n.getMessage("whatdone_label")+'*<br />'
 		+'<textarea id="whatdone" placeholder="'+chrome.i18n.getMessage("whatdone_placeholder")+'" required="required"></textarea></p>'
 		+'	<p><label>'+chrome.i18n.getMessage("whathad_label")+'*<br />'
@@ -39,21 +20,19 @@ chrome.extension.onRequest.addListener(function(info) {
 		+'	<p><label>'+chrome.i18n.getMessage("whatshould_label")+'*<br />'
 		+'<textarea id="whatshould" placeholder="'+chrome.i18n.getMessage("whatshould_placeholder")+'" required="required"></textarea></p>'
 		+'	<p><label>'+chrome.i18n.getMessage("console_label")+'<br />'
-		+'<textarea id="console" disabled="disabled">'+consoleLogs+'</textarea></p>'
+		+'<textarea id="console" disabled="disabled">'+data.infos.console+'</textarea></p>'
 		+'	<p><label><input type="checkbox" id="security" /> '+chrome.i18n.getMessage("security_label")+'</label></p>'
-		+(bugScreenshot?'	<p><img src="'+bugScreenshot+'" alt="'+chrome.i18n.getMessage("screenshot_alt")+'" /></p>':'')
-		//+(bugInfo.indexOf('mailto:')===0?'	<p><label>'+chrome.i18n.getMessage("mail_label")+'<br />'
-		//+'<input type="email" id="mail" placeholder="'+chrome.i18n.getMessage("mail_placeholder")+'" required="required" /></p>':'')
+		+(screenshot?'	<p><img src="'+screenshot+'" alt="'+chrome.i18n.getMessage("screenshot_alt")+'" /></p>':'')
 		+'	<p><label>'+chrome.i18n.getMessage("usermail_label")+'<br />'
 		+'<input type="email" id="usermail" placeholder="'+chrome.i18n.getMessage("usermail_placeholder")+'" /></p>'
-		+(bugInfo.indexOf('http:')===0?'	<p>'+chrome.i18n.getMessage("unsecure_label")+'</p>':'')
+		+(data.infos.reportUrl.indexOf('http:')===0?'	<p>'+chrome.i18n.getMessage("unsecure_label")+'</p>':'')
 		+'	<p><input type="submit" value="'+chrome.i18n.getMessage("submit")+'" /></p>'
 		+'</form>';
 		form.addEventListener('submit', function(event) {
 			event.stopPropagation();
 			event.preventDefault();
 			var content='';
-			switch(bugFormat)
+			switch(data.infos.reportType)
 				{
 				case 'application/json':
 				content=JSON.stringify({'entry':{'label':document.getElementById('summary').value,
@@ -66,7 +45,7 @@ chrome.extension.onRequest.addListener(function(info) {
 					'console':document.getElementById('console').value,
 					'usermail':document.getElementById('usermail').value,
 					'security':(document.getElementById('security').checked?1:0),
-					'screenshot':bugScreenshot}});
+					'screenshot':screenshot}});
 					break;
 				case 'multipart/form-data':
 				case 'application/x-www-form-urlencoded':
@@ -81,16 +60,16 @@ chrome.extension.onRequest.addListener(function(info) {
 					content.append('console',document.getElementById('console').value);
 					content.append('usermail',document.getElementById('usermail').value);
 					content.append('security',(document.getElementById('security').checked?1:0));
-					if(bugFormat=='multipart/form-data')
+					if(data.infos.reportType=='multipart/form-data')
 						{
-						var binary = atob(bugScreenshot.split(',')[1]);
+						var binary = atob(screenshot.split(',')[1]);
 						var array = [];
 						for(var i = 0; i < binary.length; i++)
 							array.push(binary.charCodeAt(i));
-						content.append('screenshot',new Blob([new Uint8Array(array)], {type: bugScreenshot.split(';')[0].split(':')[1]}));
+						content.append('screenshot',new Blob([new Uint8Array(array)], {type: screenshot.split(';')[0].split(':')[1]}));
 						}
 					else
-						content.append('screenshot',bugScreenshot);
+						content.append('screenshot',screenshot);
 					break;
 				case 'text/plain':
 				default:
@@ -105,41 +84,20 @@ chrome.extension.onRequest.addListener(function(info) {
 					+'Console content:'+document.getElementById('console').value+'\n'
 					+'User mail:'+document.getElementById('usermail').value+'\n'
 					+'Security issue:'+(document.getElementById('security').checked?'yes':'no')+'\n'
-					+'Screenshot (dataUri):'+bugScreenshot+'\n'
+					+'Screenshot (dataUri):'+screenshot+'\n'
 					+'See http://github.com/nfroidure/BugMeBack to know how to automate bug reporting.';
 				}
-			if(!bugInfo)
+			if(data.infos.reportUrl.indexOf('http:')===0||data.infos.reportUrl.indexOf('https:')===0)
 				{
 				while(document.body.firstChild)
 					document.body.removeChild(document.body.firstChild);
 				var p=document.createElement('p');
-				p.innerHTML='<label>'+chrome.i18n.getMessage("bugreport")+'<br /><textarea>'+content+'</textarea><br />'+chrome.i18n.getMessage("bugreport_help")+'</label>';
-				document.body.appendChild(p);
-				p.getElementsByTagName('textarea')[0].select();
-				}
-			/* Can't use mailto because of the 2048 chars limit
-			else if(bugInfo.indexOf('mailto:')===0)
-				{
-				if(!bugInfo)
-					bugInfo='mailto:'+document.getElementById('mail').value;
-				while(document.body.firstChild)
-					document.body.removeChild(document.body.firstChild);
-				var p=document.createElement('p');
-				p.innerHTML='<a href="mailto:'+bugInfo.substring(7)+'?subject=Bug+report&content='+encodeURIComponent(content)+'">Clic to send</a>';
-				document.body.appendChild(p);
-				// chrome.windows.create({'url':'mailto:'+bugInfo.substring(7)+'?subject=Bug+report&content='+encodeURIComponent(content)},null);
-				}*/
-			else if(bugInfo.indexOf('http:')===0||bugInfo.indexOf('https:')===0)
-				{
-				while(document.body.firstChild)
-					document.body.removeChild(document.body.firstChild);
-				var p=document.createElement('p');
-				p.innerHTML=chrome.i18n.getMessage("sending")+' '+bugInfo+'.';
+				p.innerHTML=chrome.i18n.getMessage("sending")+' '+data.infos.reportUrl+'.';
 				document.body.appendChild(p);
 				var req = new XMLHttpRequest();
 				req.open(
 					"POST",
-					bugInfo,
+					data.infos.reportUrl,
 					true);
 				req.onload = function()
 					{
@@ -154,13 +112,31 @@ chrome.extension.onRequest.addListener(function(info) {
 					};
 				req.send(content);
 				}
+			/* Can't use mailto because of the 2048 chars limit
+			else if(data.infos.reportUrl.indexOf('mailto:')===0)
+				{
+				while(document.body.firstChild)
+					document.body.removeChild(document.body.firstChild);
+				var p=document.createElement('p');
+				p.innerHTML='<a href="mailto:'+data.infos.reportUrl.substring(7)+'?subject=Bug+report&content='+encodeURIComponent(content)+'">Clic to send</a>';
+				document.body.appendChild(p);
+				}*/
+			else
+				{
+				while(document.body.firstChild)
+					document.body.removeChild(document.body.firstChild);
+				var p=document.createElement('p');
+				p.innerHTML='<label>'+chrome.i18n.getMessage("bugreport")+'<br /><textarea>'+content+'</textarea><br />'+chrome.i18n.getMessage("bugreport_help")+'</label>';
+				document.body.appendChild(p);
+				p.getElementsByTagName('textarea')[0].select();
+				}
 			});
 	document.body.appendChild(form);
 	});
 
 window.addEventListener('load',function(){
 	chrome.tabs.captureVisibleTab(null,null,function(dataUri){
-		bugScreenshot=(dataUri?dataUri:'');
+		screenshot=(dataUri?dataUri:'');
 		chrome.tabs.getSelected(null,function(tab){
 			if(tab&&tab.url&&dataUri)
 				{
