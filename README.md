@@ -9,12 +9,13 @@ BugMeBack is a free GNU/GPL extension for both Google Chrome and Opera that allo
 
 Finally, the user can send the bug :
 * by copy/pasting the bug report in a mail
-* automaticaly with a POST request containing a JSon report when the page contains this kind of meta tag :
+* automaticaly with a POST request containing a JSon/urlencoded/Text report when the page contains this kind of meta tag :
 `<link rel="bugreport" type="application/json" href="https://app.ecogom.fr.ewk/bug.dat" />`
 
 Hope you'll find it usefull, feel free to commit (especially if you want to translate it in your language), suggest improvement or claim issues.
 
 The extension in the Google Chrome Store : https://chrome.google.com/webstore/detail/bugmeback/hgmagcomobmjhaomdoihiggpdekaehmg
+Also available on the Opera extensions website : https://addons.opera.com/en/extensions/details/bugmeback/
 
 A blog post in french about BugMeBack : http://www.insertafter.com/articles-bugmeback.html
 

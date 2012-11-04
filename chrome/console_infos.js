@@ -15,7 +15,6 @@ console={
 	};
 // Catching error raising
 window.onerror = function myErrorHandler(error, url, line) {
-	console.nativeConsole.log(arguments);
 	console.history.push(url+' ['+line+']: '+error);
 	return false;
 	};
