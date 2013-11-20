@@ -13,7 +13,8 @@ window.console={
 };
 // Catching error raising
 window.addEventListener('error', function myErrorHandler(error, url, line) {
-  console.history.push(error.filename+' ['+error.lineno+':'+error.colno+']: '+error.message);
+  console.history.push(error.filename+' ['+error.lineno+':'+error.colno+']: '
+    +error.message);
   return false;
 });
 
