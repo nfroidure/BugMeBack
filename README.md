@@ -1,6 +1,8 @@
 BugMeBack
 ============
 
+** Abandonated: ** I'm not doing to maintain this project anymore, i'll just leave it here for historical reasons. Feel free to reuse it according to its license.
+
 BugMeBack is a free GNU/GPL extension for both Google Chrome and Opera that allows your users to report bugs with a form that :
 * ask all the elements to reproduce and understand the bug
 * give the user agent, screen size and url of the bug
